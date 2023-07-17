@@ -1,9 +1,28 @@
 import { View, Text,SafeAreaView,Image,ScrollView, TouchableOpacity } from 'react-native'
 import React,{useState} from 'react'
 import defaultMessages from '../api//message'
+import { Audio } from 'expo-av'
 
 export default function HomeScreen() {
+  const [audioPermission,setAudioPermission]=useState(false)
+  async function componentDidMount(){
+    await Audio.requestPermissionsAsync().then(permission=>{
+      setAudioPermission(permission.granted)
+    })
+  }
+  componentDidMount()
   const [message,setMessage] = useState(defaultMessages)
+  const [recording,setRecording] = useState(false)
+  const clearMessage = ()=>{
+    setMessage([])
+  }
+  const recordMessage = ()=>{
+    if(recording){
+      setRecording(false)
+    }else{
+      setRecording(true)
+    }
+  }
   return (
     <SafeAreaView className="flex-1 bg-yellow-100">
         {
@@ -77,13 +96,15 @@ export default function HomeScreen() {
                   </Image>
             </TouchableOpacity>
 
-                <TouchableOpacity className="bg-blue-100 rounded-full p-1"> 
+                <TouchableOpacity onPress={recordMessage} 
+                  className="bg-blue-100 rounded-full p-1"> 
                   <Image source={require("../../assets/images/firstapp3.png")}
                     className="w-12 h-12 rounded-full"
                   ></Image>
                 </TouchableOpacity>
     
-            <TouchableOpacity className="bg-green-200 rounded-full p-1">
+            <TouchableOpacity onPress={clearMessage}
+              className="bg-green-200 rounded-full p-1">
                   <Image source={require("../../assets/images/firstapp5.png")}
                     className="h-12 w-12 rounded-full"
                   >
